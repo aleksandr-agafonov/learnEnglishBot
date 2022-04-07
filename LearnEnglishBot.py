@@ -15,7 +15,7 @@ import nest_asyncio
 import re
 
 
-token = '1938283222:AAEe7C80RbtpAjW7BVBzt6qISW8VnzIpg0A'  # токен для теста
+#token = '1938283222:AAEe7C80RbtpAjW7BVBzt6qISW8VnzIpg0A'  # токен для теста
 token = '5240835692:AAHyCfFYzcfzd7tl7DNivBzPGEw46_fkqcI'  # боевой токен
 bot = Bot(token=token)
 dp = Dispatcher(bot, storage=MemoryStorage())
