@@ -32,6 +32,8 @@ async def greetings(message: types.Message, state: FSMContext):
 # выбираем квиз на английском
 @dp.callback_query_handler(lambda c: c.data == 'english_words')
 async def choose_english_quiz(callback_query: types.CallbackQuery, state: FSMContext):
+    # убираем прошлую клавиатуру
+    await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
 
     async with state.proxy() as data:
         data['guess_word_language'] = 'english'
@@ -46,6 +48,8 @@ async def choose_english_quiz(callback_query: types.CallbackQuery, state: FSMCon
 # выбираем квиз на русском
 @dp.callback_query_handler(lambda c: c.data == 'russian_words')
 async def choose_russian_quiz(callback_query: types.CallbackQuery, state: FSMContext):
+    # убираем прошлую клавиатуру
+    await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
 
     async with state.proxy() as data:
         data['guess_word_language'] = 'russian'
@@ -60,6 +64,8 @@ async def choose_russian_quiz(callback_query: types.CallbackQuery, state: FSMCon
 # нажали на кнопку "назад"
 @dp.callback_query_handler(lambda c: c.data == 'no_button', state='*')
 async def get_back(callback_query: types.CallbackQuery, state: FSMContext):
+    # убираем прошлую клавиатуру
+    await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
     await bot.answer_callback_query(callback_query.id)
     await state.reset_state()
     message_text = 'Привет, давай поучим английский? :)'
@@ -69,6 +75,9 @@ async def get_back(callback_query: types.CallbackQuery, state: FSMContext):
 # согласились пройти тест
 @dp.callback_query_handler(lambda c: c.data == 'yes_button')
 async def start_quiz(callback_query: types.CallbackQuery, state: FSMContext):
+    # убираем прошлую клавиатуру
+    await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
+
     await bot.answer_callback_query(callback_query.id)
 
     message_text = 'Что ж, давай приступим'
@@ -89,6 +98,8 @@ async def start_quiz(callback_query: types.CallbackQuery, state: FSMContext):
 # обработка первого ответа
 @dp.callback_query_handler(lambda c: re.search('.*_answer', c.data), state=Actions.english_quiz_question_1)
 async def english_first_question(callback_query: types.CallbackQuery, state: FSMContext):
+    # убираем прошлую клавиатуру
+    await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
 
     async with state.proxy() as data:
         # проверяем правильность ответа
@@ -112,6 +123,8 @@ async def english_first_question(callback_query: types.CallbackQuery, state: FSM
 # обработка второго ответа
 @dp.callback_query_handler(lambda c: re.search('.*_answer', c.data), state=Actions.english_quiz_question_2)
 async def english_second_question(callback_query: types.CallbackQuery, state: FSMContext):
+    # убираем прошлую клавиатуру
+    await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
     async with state.proxy() as data:
         # проверяем правильность ответа
         check_answer = await QuizFunctions.check_answer(callback_query.data,
@@ -134,6 +147,8 @@ async def english_second_question(callback_query: types.CallbackQuery, state: FS
 # обработка третьего ответа
 @dp.callback_query_handler(lambda c: re.search('.*_answer', c.data), state=Actions.english_quiz_question_3)
 async def english_third_question(callback_query: types.CallbackQuery, state: FSMContext):
+    # убираем прошлую клавиатуру
+    await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
     async with state.proxy() as data:
         # проверяем правильность ответа
         check_answer = await QuizFunctions.check_answer(callback_query.data,
@@ -156,6 +171,8 @@ async def english_third_question(callback_query: types.CallbackQuery, state: FSM
 # обработка четвертого ответа
 @dp.callback_query_handler(lambda c: re.search('.*_answer', c.data), state=Actions.english_quiz_question_4)
 async def english_forth_question(callback_query: types.CallbackQuery, state: FSMContext):
+    # убираем прошлую клавиатуру
+    await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
     async with state.proxy() as data:
         # проверяем правильность ответа
         check_answer = await QuizFunctions.check_answer(callback_query.data,
@@ -178,6 +195,8 @@ async def english_forth_question(callback_query: types.CallbackQuery, state: FSM
 # обработка пятого ответа
 @dp.callback_query_handler(lambda c: re.search('.*_answer', c.data), state=Actions.english_quiz_question_5)
 async def english_fifth_question(callback_query: types.CallbackQuery, state: FSMContext):
+    # убираем прошлую клавиатуру
+    await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
     async with state.proxy() as data:
         # проверяем правильность ответа
         check_answer = await QuizFunctions.check_answer(callback_query.data, data['answer'], data['score'], data['translation'])
@@ -197,6 +216,8 @@ async def english_fifth_question(callback_query: types.CallbackQuery, state: FSM
 # выбираем составить слово из букв
 @dp.callback_query_handler(lambda c: c.data == 'make_up_word')
 async def choose_make_up_word(callback_query: types.CallbackQuery, state: FSMContext):
+    # убираем прошлую клавиатуру
+    await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
     message_text = 'Я дам тебе набор букв, \n'\
                    'из которых нужно составить слово на английском,\n'\
                    'В качестве подсказки я дам тебе его перевод'
@@ -208,6 +229,8 @@ async def choose_make_up_word(callback_query: types.CallbackQuery, state: FSMCon
 # согласились составить слово из букв
 @dp.callback_query_handler(lambda c: c.data == 'yes_button', state=Actions.make_up_word_state)
 async def start_make_up_word(callback_query: types.CallbackQuery, state: FSMContext):
+    # убираем прошлую клавиатуру
+    await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
     await bot.answer_callback_query(callback_query.id)
     message_text = 'Что ж, давай приступим'
     await bot.send_message(callback_query.from_user.id, message_text)
