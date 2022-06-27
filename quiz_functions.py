@@ -23,6 +23,7 @@ class QuizFunctions:
         nest_asyncio.apply()
         loop = asyncio.get_running_loop()
         run_func = loop.create_task(QuizFunctions.create_question(language))
+
         loop.run_until_complete(run_func)
         result = run_func.result()
 

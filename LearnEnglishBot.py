@@ -15,8 +15,8 @@ import nest_asyncio
 import re
 
 
-#token = '1938283222:AAEe7C80RbtpAjW7BVBzt6qISW8VnzIpg0A'  # токен для теста
-token = '5240835692:AAHyCfFYzcfzd7tl7DNivBzPGEw46_fkqcI'  # боевой токен
+token = '1938283222:AAEe7C80RbtpAjW7BVBzt6qISW8VnzIpg0A'  # токен для теста
+#token = '5240835692:AAHyCfFYzcfzd7tl7DNivBzPGEw46_fkqcI'  # боевой токен
 bot = Bot(token=token)
 dp = Dispatcher(bot, storage=MemoryStorage())
 nest_asyncio.apply()  # для добавления задач в ассинхрон
@@ -77,7 +77,6 @@ async def get_back(callback_query: types.CallbackQuery, state: FSMContext):
 async def start_quiz(callback_query: types.CallbackQuery, state: FSMContext):
     # убираем прошлую клавиатуру
     await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
-
     await bot.answer_callback_query(callback_query.id)
 
     message_text = 'Что ж, давай приступим'
@@ -89,9 +88,10 @@ async def start_quiz(callback_query: types.CallbackQuery, state: FSMContext):
         data['answer'] = result_dict['quiz_word']
         data['translation'] = result_dict['quiz_options'][result_dict['quiz_word']]
         data['score'] = 0
+        data['keyboard'] = result_dict['options_keyboard']
 
     quiz_text = f'Выберете верный вариант перевода:\n{data["answer"]}'
-    await bot.send_message(callback_query.from_user.id, quiz_text, reply_markup=result_dict['options_keyboard'])
+    await bot.send_message(callback_query.from_user.id, quiz_text, reply_markup=data['keyboard'])
     await Actions.english_quiz_question_1.set()
 
 
@@ -103,19 +103,20 @@ async def english_first_question(callback_query: types.CallbackQuery, state: FSM
 
     async with state.proxy() as data:
         # проверяем правильность ответа
-        check_answer = await QuizFunctions.check_answer(callback_query.data,
-                                                        data['answer'], data['score'], data['translation'])
+        check_answer = await QuizFunctions.check_answer(callback_query.data, data['answer'], data['score'], data['translation'])
         data['score'] = check_answer['score']
-        await bot.send_message(callback_query.from_user.id, check_answer['message_text'])
+
+    await bot.send_message(callback_query.from_user.id, check_answer['message_text'])
 
     # сохраняем ответ
     async with state.proxy() as data:
         result_dict = await QuizFunctions.run_async_functions(data['guess_word_language'])
         data['answer'] = result_dict['quiz_word']
         data['translation'] = result_dict['quiz_options'][result_dict['quiz_word']]
+        data['keyboard'] = result_dict['options_keyboard']
 
     quiz_text = f'Выберете верный вариант перевода:\n{data["answer"]}'
-    await bot.send_message(callback_query.from_user.id, quiz_text, reply_markup=result_dict['options_keyboard'])
+    await bot.send_message(callback_query.from_user.id, quiz_text, reply_markup=data['keyboard']) # уот тут ломаецо
     await bot.answer_callback_query(callback_query.id)
     await Actions.english_quiz_question_2.set()
 
@@ -125,11 +126,12 @@ async def english_first_question(callback_query: types.CallbackQuery, state: FSM
 async def english_second_question(callback_query: types.CallbackQuery, state: FSMContext):
     # убираем прошлую клавиатуру
     await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
+
     async with state.proxy() as data:
         # проверяем правильность ответа
-        check_answer = await QuizFunctions.check_answer(callback_query.data,
-                                                        data['answer'], data['score'], data['translation'])
+        check_answer = await QuizFunctions.check_answer(callback_query.data, data['answer'], data['score'], data['translation'])
         data['score'] = check_answer['score']
+
     await bot.send_message(callback_query.from_user.id, check_answer['message_text'])
 
     # сохраняем ответ
@@ -137,9 +139,10 @@ async def english_second_question(callback_query: types.CallbackQuery, state: FS
         result_dict = await QuizFunctions.run_async_functions(data['guess_word_language'])
         data['answer'] = result_dict['quiz_word']
         data['translation'] = result_dict['quiz_options'][result_dict['quiz_word']]
+        data['keyboard'] = result_dict['options_keyboard']
 
     quiz_text = f'Выберете верный вариант перевода:\n{data["answer"]}'
-    await bot.send_message(callback_query.from_user.id, quiz_text, reply_markup=result_dict['options_keyboard'])
+    await bot.send_message(callback_query.from_user.id, quiz_text, reply_markup=data['keyboard'])
     await bot.answer_callback_query(callback_query.id)
     await Actions.english_quiz_question_3.set()
 
@@ -149,11 +152,12 @@ async def english_second_question(callback_query: types.CallbackQuery, state: FS
 async def english_third_question(callback_query: types.CallbackQuery, state: FSMContext):
     # убираем прошлую клавиатуру
     await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
+
     async with state.proxy() as data:
         # проверяем правильность ответа
-        check_answer = await QuizFunctions.check_answer(callback_query.data,
-                                                        data['answer'], data['score'], data['translation'])
+        check_answer = await QuizFunctions.check_answer(callback_query.data, data['answer'], data['score'], data['translation'])
         data['score'] = check_answer['score']
+
     await bot.send_message(callback_query.from_user.id, check_answer['message_text'])
 
     # сохраняем ответ
@@ -161,9 +165,10 @@ async def english_third_question(callback_query: types.CallbackQuery, state: FSM
         result_dict = await QuizFunctions.run_async_functions(data['guess_word_language'])
         data['answer'] = result_dict['quiz_word']
         data['translation'] = result_dict['quiz_options'][result_dict['quiz_word']]
+        data['keyboard'] = result_dict['options_keyboard']
 
     quiz_text = f'Выберете верный вариант перевода:\n{data["answer"]}'
-    await bot.send_message(callback_query.from_user.id, quiz_text, reply_markup=result_dict['options_keyboard'])
+    await bot.send_message(callback_query.from_user.id, quiz_text, reply_markup=data['keyboard'])
     await bot.answer_callback_query(callback_query.id)
     await Actions.english_quiz_question_4.set()
 
@@ -173,11 +178,12 @@ async def english_third_question(callback_query: types.CallbackQuery, state: FSM
 async def english_forth_question(callback_query: types.CallbackQuery, state: FSMContext):
     # убираем прошлую клавиатуру
     await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
+
     async with state.proxy() as data:
         # проверяем правильность ответа
-        check_answer = await QuizFunctions.check_answer(callback_query.data,
-                                                        data['answer'], data['score'], data['translation'])
+        check_answer = await QuizFunctions.check_answer(callback_query.data, data['answer'], data['score'], data['translation'])
         data['score'] = check_answer['score']
+
     await bot.send_message(callback_query.from_user.id, check_answer['message_text'])
 
     # сохраняем ответ
@@ -185,9 +191,10 @@ async def english_forth_question(callback_query: types.CallbackQuery, state: FSM
         result_dict = await QuizFunctions.run_async_functions(data['guess_word_language'])
         data['answer'] = result_dict['quiz_word']
         data['translation'] = result_dict['quiz_options'][result_dict['quiz_word']]
+        data['keyboard'] = result_dict['options_keyboard']
 
     quiz_text = f'Выберете верный вариант перевода:\n{data["answer"]}'
-    await bot.send_message(callback_query.from_user.id, quiz_text, reply_markup=result_dict['options_keyboard'])
+    await bot.send_message(callback_query.from_user.id, quiz_text, reply_markup=data['keyboard'])
     await bot.answer_callback_query(callback_query.id)
     await Actions.english_quiz_question_5.set()
 
@@ -197,10 +204,12 @@ async def english_forth_question(callback_query: types.CallbackQuery, state: FSM
 async def english_fifth_question(callback_query: types.CallbackQuery, state: FSMContext):
     # убираем прошлую клавиатуру
     await bot.edit_message_reply_markup(callback_query.from_user.id, message_id=callback_query.message.message_id)
+
     async with state.proxy() as data:
         # проверяем правильность ответа
         check_answer = await QuizFunctions.check_answer(callback_query.data, data['answer'], data['score'], data['translation'])
         data['score'] = check_answer['score']
+
     await bot.send_message(callback_query.from_user.id, check_answer['message_text'])
 
     # обнбнуляем состояние
@@ -261,4 +270,4 @@ async def make_up_word_check(message: types.Message, state: FSMContext):
 
 
 executor.start_polling(dp, skip_updates=True)
-# сделать ветку с собиранием слов из перемешанных букв
+# проблема с "русской" веткой в том, что в клавиатуре ответ не может быть более 64 бит
