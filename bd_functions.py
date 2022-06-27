@@ -18,8 +18,8 @@ class DbFunctions:
                             english,
                             russian
                         FROM er_dictionary ed
-                        WHERE LENGTH(russian) <= 32
-	                        AND LENGTH(english) <= 32 
+                        WHERE LENGTH(russian) <= 25
+	                        AND LENGTH(english) <= 25 
                         ORDER BY RANDOM()
                         LIMIT 4
                 '''
@@ -29,8 +29,8 @@ class DbFunctions:
                             russian,
                             english
                         FROM er_dictionary ed
-                        WHERE LENGTH(russian) <= 32
-	                        AND LENGTH(english) <= 32 
+                        WHERE LENGTH(russian) <= 25
+	                        AND LENGTH(english) <= 25 
                         ORDER BY RANDOM()
                         LIMIT 4
                 '''
